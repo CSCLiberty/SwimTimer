@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".LapTimer">
 
     <Button
         android:id="@+id/lane6LapRecallButton"
@@ -247,8 +247,8 @@
         android:layout_height="40dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="53dp"
-        android:layout_marginEnd="283dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="290dp"
         android:text="Start" />
 
     <TextView
@@ -260,5 +260,27 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="258dp"
         android:text="TextView" />
+
+    <Button
+        android:id="@+id/splitResetButton"
+        android:layout_width="116dp"
+        android:layout_height="36dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="221dp"
+        android:layout_marginBottom="6dp"
+        android:text="Reset Splits"
+        android:textSize="12sp" />
+
+    <Button
+        android:id="@+id/showSplitsButton"
+        android:layout_width="69dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="27dp"
+        android:layout_marginEnd="0dp"
+        android:text="Splits ->"
+        android:textSize="10sp" />
 
 </RelativeLayout>

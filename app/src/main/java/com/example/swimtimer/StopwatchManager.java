@@ -15,18 +15,6 @@ public class StopwatchManager {
         }
     }
 
-    public void startResetAll ()
-    {
-        if(timersStarted)
-        {
-            resetAllStopwatches();
-        }
-        else
-        {
-            startAllStopwatches();
-        }
-    }
-
     public long stopStopwatch(int stopwatchIndex) {
 
         Stopwatch currentStopwatch = stopwatches.get(stopwatchIndex);
@@ -49,24 +37,36 @@ public class StopwatchManager {
     }
 
     public void startAllStopwatches() {
+            if(timersStarted) {
+                for(Stopwatch currentStopwatch: stopwatches) {
+                    if(currentStopwatch.getSwimmerStartTimesInMillis().get(0) > 0)
+                    {
+                        currentStopwatch.getSwimmerStartTimesInMillis().add(currentStopwatch.getStartTimeInMillis());
+                    }
+                    currentStopwatch.setNextSwimmerStartTime(System.currentTimeMillis());
 
-            startTime = System.currentTimeMillis();
-            for (int i = 0; i < stopwatches.size(); i++)
-            {
-                Stopwatch currentStopwatch = stopwatches.get(i);
-
-                currentStopwatch.setStartTimeInMillis(startTime);
-                currentStopwatch.setIsRunning(true);
-                //Ensuring that the lap/swimmer stop buttons will now serve as reset buttons
-                if(currentStopwatch.getLapTimes().size() > 0) {
-                    currentStopwatch.setHasBeenRestartedLap(true);
-                }
-                if(currentStopwatch.getSwimmerTimes().size() > 0) {
-                    currentStopwatch.setHasBeenRestartedSwimmer(true);
                 }
 
             }
-            timersStarted = true;
+            else
+            {
+                startTime = System.currentTimeMillis();
+                for (int i = 0; i < stopwatches.size(); i++) {
+                    Stopwatch currentStopwatch = stopwatches.get(i);
+
+                    currentStopwatch.setStartTimeInMillis(startTime);
+                    currentStopwatch.setIsRunning(true);
+                    //Ensuring that the lap/swimmer stop buttons will now serve as reset buttons
+                    if (currentStopwatch.getLapTimes().size() > 0) {
+                        currentStopwatch.setHasBeenRestartedLap(true);
+                    }
+                    if (currentStopwatch.getSwimmerTimes().size() > 0) {
+                        currentStopwatch.setHasBeenRestartedSwimmer(true);
+                    }
+
+                }
+                timersStarted = true;
+            }
         }
 
 
@@ -96,6 +96,7 @@ public class StopwatchManager {
     {
         stopStopwatch(index);
         stopwatches.get(index).setFinalTimeInMillis(0);
+        stopwatches.get(index).getSwimmerStartTimesInMillis().clear();
     }
 
     public boolean isTimersStarted() {

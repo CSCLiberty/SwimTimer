@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.swimtimer.SplitsDisplay">
+
+    <ListView
+        android:id="@+id/lane2ListView"
+        android:layout_width="215dp"
+        android:layout_height="179dp"
+        tools:layout_editor_absoluteX="208dp"
+        tools:layout_editor_absoluteY="6dp" />
+
+    <ListView
+        android:id="@+id/lane6ListView"
+        android:layout_width="215dp"
+        android:layout_height="179dp"
+        tools:layout_editor_absoluteX="420dp"
+        tools:layout_editor_absoluteY="184dp" />
+
+    <ListView
+        android:id="@+id/lane5ListView"
+        android:layout_width="215dp"
+        android:layout_height="179dp"
+        tools:layout_editor_absoluteX="208dp"
+        tools:layout_editor_absoluteY="184dp" />
+
+    <ListView
+        android:id="@+id/lane4ListView"
+        android:layout_width="208dp"
+        android:layout_height="179dp"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="184dp" />
+
+    <Button
+        android:id="@+id/returnButton"
+        android:layout_width="49dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.513" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="47dp"
+        android:layout_height="35dp"
+        android:text="Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="588dp" />
+
+    <ListView
+        android:id="@+id/lane1ListView"
+        android:layout_width="204dp"
+        android:layout_height="178dp"
+        tools:layout_editor_absoluteX="4dp"
+        tools:layout_editor_absoluteY="6dp" />
+
+    <ListView
+        android:id="@+id/lane3ListView"
+        android:layout_width="220dp"
+        android:layout_height="178dp"
+        tools:layout_editor_absoluteX="428dp"
+        tools:layout_editor_absoluteY="6dp" />
+
+</android.support.constraint.ConstraintLayout>

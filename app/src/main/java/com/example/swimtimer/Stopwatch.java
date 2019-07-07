@@ -4,11 +4,13 @@ import java.util.ArrayList;
 
 public class Stopwatch {
     private long startTimeInMillis;
+    private ArrayList<Long> swimmerStartTimesInMillis;
+    private int nextStartTimeToUse;
     private long stopTimeInMillis;
     private long finalTimeInMillis = 0;
-    //These are for modifying the new times
+    //Storing the lap times so that they can be subtracted from the next lap time
     private ArrayList<Long> lapTimesUnmodified = new ArrayList<>();
-    private ArrayList<Long> swimmerTimesUnmodified = new ArrayList<>();
+
     //These are for storing and returning the modified times
     private ArrayList<Long> lapTimes = new ArrayList<Long>();
     private ArrayList<Long> swimmerTimes = new ArrayList<Long>();
@@ -47,7 +49,7 @@ public class Stopwatch {
     {
         startTimeInMillis = startTime;
         lapTimesUnmodified.add(startTime);
-        swimmerTimesUnmodified.add(startTime);
+        swimmerStartTimesInMillis.add(startTime);
 
     }
 
@@ -69,11 +71,18 @@ public class Stopwatch {
 
     public long addSwimmerTimeInMillis(long swimmerTime)
     {
-        long swimmerTimeInMillis = swimmerTime - startTimeInMillis;
+        if(swimmerStartTimesInMillis.get(0) > 0) {
+            long currentSwimmerStartTime = swimmerStartTimesInMillis.get(nextStartTimeToUse);
+            long swimmerTimeInMillis = swimmerTime - currentSwimmerStartTime;
 
-        swimmerTimes.add(swimmerTimeInMillis);
+            swimmerTimes.add(swimmerTimeInMillis);
 
-        return swimmerTimeInMillis;
+            return swimmerTimeInMillis;
+        }
+        else
+        {
+            return 0;
+        }
     }
 
 
@@ -155,5 +164,14 @@ public class Stopwatch {
 
     public int getNextSwimmerToReturn() {
         return nextSwimmerToReturn;
+    }
+
+    public void setNextSwimmerStartTime(long nextStartTimeInMillis)
+    {
+        swimmerStartTimesInMillis.add(nextStartTimeInMillis);
+    }
+
+    public ArrayList<Long> getSwimmerStartTimesInMillis() {
+        return swimmerStartTimesInMillis;
     }
 }

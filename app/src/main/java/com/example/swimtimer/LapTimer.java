@@ -1,14 +1,19 @@
 package com.example.swimtimer;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
+import com.example.swimtimer.TimingService.MyBinder;
 import java.util.ArrayList;
 
 
-public class MainActivity extends AppCompatActivity {
+public class LapTimer extends AppCompatActivity {
 
     private TextView currentTimeTextView;
     private TextView lane1TView;
@@ -48,14 +53,21 @@ public class MainActivity extends AppCompatActivity {
     private Button lane4SwimmerRecallButton;
     private Button lane5SwimmerRecallButton;
     private Button lane6SwimmerRecallButton;
+    private Button splitResetButton;
     private ArrayList<Button> stopButtons = new ArrayList<>();
     private ArrayList<TextView> displayTextViews = new ArrayList<>();
     private ArrayList<Button> lapButtons = new ArrayList<>();
     private ArrayList<Button> lapRecallButtons = new ArrayList<>();
     private ArrayList<Button> swimmerStopButtons = new ArrayList<>();
     private ArrayList<Button> swimmerRecallButtons = new ArrayList<>();
-    private com.example.swimtimer.StopwatchManager myManager = new StopwatchManager();
     private TimerClass myTimer;
+    private StopwatchManager myManager = new StopwatchManager();
+    private Boolean isTimerServiceBound;
+
+   // TimingService timerService = new TimingService();
+
+
+    private Button showSplitsDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +76,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         super.onCreate(savedInstanceState);
 
+
+        splitResetButton = findViewById(R.id.splitResetButton);
+        showSplitsDisplay = findViewById(R.id.showSplitsButton);
         currentTimeTextView = findViewById(R.id.currentTimeTextView);
         lane1TView = findViewById(R.id.lane1TView);
         lane2TView = findViewById(R.id.lane2TView);
@@ -115,13 +130,50 @@ public class MainActivity extends AppCompatActivity {
         lapRecallButtons.add(lane4LapRecallButton);
         lapRecallButtons.add(lane5LapRecallButton);
         lapRecallButtons.add(lane6LapRecallButton);
+
+
+        //Launch Service
+        //Intent timerServiceIntent = new Intent(this,TimingService.class);
+        //startService(timerServiceIntent);
+        //bindService(timerServiceIntent,timerServiceConnection, Context.BIND_AUTO_CREATE);
+
+        //myManager = timerService.myManager;
         myManager.initStopwatches(6);
+
+
+
+
 
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onStartClick();
+                if(myManager.isTimersStarted())
+                {
+                    onResetClicked();
+                }
+                else
+                {
+                    onStartClicked();
+                }
 
+            }
+        });
+        splitResetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onResetClicked();
+            }
+        });
+
+        splitResetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < myManager.stopwatches.size(); i++)
+                {
+                    myManager.resetLaps(i);
+                    myManager.resetSwimmers(i);
+
+                }
             }
         });
 
@@ -159,40 +211,44 @@ public class MainActivity extends AppCompatActivity {
             lapButtons.get(i).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    displayTextViews.get(stopwatchNum).setText(com.example.swimtimer.TimeFormat.timeFormat(myManager.lap(stopwatchNum)));
+                    displayTextViews.get(stopwatchNum).setText(TimeFormat.timeFormat(myManager.lap(stopwatchNum)));
                 }
             });
 
             lapRecallButtons.get(i).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    displayTextViews.get(stopwatchNum).setText(com.example.swimtimer.TimeFormat.timeFormat(myManager.stopwatches.get(stopwatchNum).getNextLapTime()));
+                    displayTextViews.get(stopwatchNum).setText(TimeFormat.timeFormat(myManager.stopwatches.get(stopwatchNum).getNextLapTime()));
                 }
             });
-
-/*            swimmerStopButtons.get(i).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    displayTextViews.get(stopwatchNum).setText(com.example.swimtimer.TimeFormat.timeFormat(myManager.swimmerStop(stopwatchNum)));
-                }
-            });
-
-            swimmerRecallButtons.get(i).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    displayTextViews.get(stopwatchNum).setText(com.example.swimtimer.TimeFormat.timeFormat(myManager.stopwatches.get(stopwatchNum).getNextSwimmerTime()));
-                }
-            });
-*/
 
         }
 
-
+        showSplitsDisplay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSplitsClicked();
+            }
+        });
 
     }
 
-    protected void onStartClick()
+    protected void showSplitsClicked()
     {
+        Intent showSplitsIntent = new Intent("android.intent.action.SplitsDisplay");
+        int k = 0;
+        for(int i = 0; i < myManager.stopwatches.size(); i++ ) {
+            Stopwatch currentStopwatch = myManager.stopwatches.get(i);
+            for(int j = 0; j < currentStopwatch.getLapTimes().size(); j++) {
+                showSplitsIntent.putExtra(com.example.swimtimer.TimeFormat.timeFormat(currentStopwatch.getNextLapTime()), k);
+                startActivity(showSplitsIntent);
+                k++;
+            }
+        }
+
+
+    }
+    protected void onStartClicked() {
         if (myManager.isFirstStart() == true) {
             for (TextView textView : displayTextViews) {
                 textView.setText("0:00.000");
@@ -201,41 +257,42 @@ public class MainActivity extends AppCompatActivity {
             myManager.setFirstStart(false);
             currentTimeTextView.setText("0:00.000");
         }
-        if (myManager.isTimersStarted() == false) { //Start
-            //final StopwatchManager myCurrentManager = myManager;
-            //final TextView currentTimeTextView = currentTimeTView;
-            myManager.startResetAll();
+
+            myManager.startAllStopwatches();
             myTimer.startTimer();
-            /*CountDownTimer myTimer = new CountDownTimer(1000000, 10) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    String displayTimeString = myManager.getCurrentTime();
-                    currentTimeTextView.setText(displayTimeString);
-                }
-
-                @Override
-                public void onFinish() {
-
-                }
-            };
-            */
-
             startButton.setText("Reset");
 
         }
-        else //Reset
+
+    public void onResetClicked()//Reset
             {
-            myManager.startResetAll();
+            myManager.resetAllStopwatches();
             /*for (TextView textView : displayTextViews) {
                 textView.setText("0:00.000");
             }
             */
             currentTimeTextView.setText("0:00.000");
-            startButton.setText("Start");
             myTimer.reset();
+            startButton.setText("Start");
             }
 
+    /*private ServiceConnection timerServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MyBinder binder = (MyBinder) service;
+            timerService = binder.getService();
+            isTimerServiceBound = true;
+        }
+
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            isTimerServiceBound = true;
+        }
+
+    };
+*/
     }
 
-}
+
 
