@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Stopwatch {
     private long startTimeInMillis;
-    private ArrayList<Long> swimmerStartTimesInMillis;
+    private ArrayList<Long> swimmerStartTimesInMillis = new ArrayList<>();
     private int nextStartTimeToUse;
     private long stopTimeInMillis;
     private long finalTimeInMillis = 0;
