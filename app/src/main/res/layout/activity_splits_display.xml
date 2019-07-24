@@ -10,29 +10,31 @@
         android:id="@+id/lane2ListView"
         android:layout_width="215dp"
         android:layout_height="179dp"
-        tools:layout_editor_absoluteX="208dp"
-        tools:layout_editor_absoluteY="6dp" />
+        android:layout_marginTop="6dp"
+        app:layout_constraintStart_toEndOf="@+id/lane1ListView"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
         android:id="@+id/lane6ListView"
         android:layout_width="215dp"
         android:layout_height="179dp"
-        tools:layout_editor_absoluteX="420dp"
-        tools:layout_editor_absoluteY="184dp" />
+        android:layout_marginStart="1dp"
+        app:layout_constraintStart_toEndOf="@+id/lane5ListView"
+        app:layout_constraintTop_toBottomOf="@id/lane3ListView" />
 
     <ListView
         android:id="@+id/lane5ListView"
         android:layout_width="215dp"
         android:layout_height="179dp"
-        tools:layout_editor_absoluteX="208dp"
-        tools:layout_editor_absoluteY="184dp" />
+        app:layout_constraintStart_toEndOf="@+id/lane4ListView"
+        app:layout_constraintTop_toBottomOf="@+id/lane2ListView" />
 
     <ListView
         android:id="@+id/lane4ListView"
         android:layout_width="208dp"
         android:layout_height="179dp"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="184dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lane1ListView" />
 
     <Button
         android:id="@+id/returnButton"
@@ -40,32 +42,27 @@
         android:layout_height="34dp"
         android:layout_marginStart="4dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/lane4ListView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.513" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="47dp"
-        android:layout_height="35dp"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="588dp" />
 
     <ListView
         android:id="@+id/lane1ListView"
         android:layout_width="204dp"
         android:layout_height="178dp"
-        tools:layout_editor_absoluteX="4dp"
-        tools:layout_editor_absoluteY="6dp" />
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
         android:id="@+id/lane3ListView"
-        android:layout_width="220dp"
-        android:layout_height="178dp"
-        tools:layout_editor_absoluteX="428dp"
-        tools:layout_editor_absoluteY="6dp" />
+        android:layout_width="221dp"
+        android:layout_height="181dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintStart_toEndOf="@+id/lane2ListView"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

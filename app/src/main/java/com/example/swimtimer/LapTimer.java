@@ -61,10 +61,11 @@ public class LapTimer extends AppCompatActivity {
     private ArrayList<Button> swimmerStopButtons = new ArrayList<>();
     private ArrayList<Button> swimmerRecallButtons = new ArrayList<>();
     private TimerClass myTimer;
-    private StopwatchManager myManager = new StopwatchManager();
-    private Boolean isTimerServiceBound;
+    private StopwatchManager myManager;
+    private Boolean isTimerServiceBound = false;
 
-   // TimingService timerService = new TimingService();
+    TimingService timerService;
+
 
 
     private Button showSplitsDisplay;
@@ -105,7 +106,7 @@ public class LapTimer extends AppCompatActivity {
         lane4LapRecallButton = findViewById(R.id.lane4LapRecallButton);
         lane5LapRecallButton = findViewById(R.id.lane5LapRecallButton);
         lane6LapRecallButton = findViewById(R.id.lane6LapRecallButton);
-        myTimer = new TimerClass(currentTimeTextView,10000000);
+        myTimer = new TimerClass(currentTimeTextView, 10000000);
         stopButtons.add(lane1Stop);
         stopButtons.add(lane2Stop);
         stopButtons.add(lane3Stop);
@@ -133,17 +134,17 @@ public class LapTimer extends AppCompatActivity {
 
 
         //Launch Service
-        //Intent timerServiceIntent = new Intent(this,TimingService.class);
-        //startService(timerServiceIntent);
-        //bindService(timerServiceIntent,timerServiceConnection, Context.BIND_AUTO_CREATE);
+        Intent timerServiceIntent = new Intent(this, TimingService.class);
+        startService(timerServiceIntent);
+        bindService(timerServiceIntent, timerServiceConnection, Context.BIND_AUTO_CREATE);
 
-        //myManager = timerService.myManager;
-        myManager.initStopwatches(6);
-
+        //myManager = timerService.getMyManager();
 
 
-
-
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -227,29 +228,22 @@ public class LapTimer extends AppCompatActivity {
         showSplitsDisplay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSplitsClicked();
+                onShowSplitsClicked();
             }
         });
 
     }
 
-    protected void showSplitsClicked()
+    protected void onShowSplitsClicked()
     {
         Intent showSplitsIntent = new Intent("android.intent.action.SplitsDisplay");
-        int k = 0;
-        for(int i = 0; i < myManager.stopwatches.size(); i++ ) {
-            Stopwatch currentStopwatch = myManager.stopwatches.get(i);
-            for(int j = 0; j < currentStopwatch.getLapTimes().size(); j++) {
-                showSplitsIntent.putExtra(com.example.swimtimer.TimeFormat.timeFormat(currentStopwatch.getNextLapTime()), k);
-                startActivity(showSplitsIntent);
-                k++;
-            }
-        }
+        startActivity(showSplitsIntent);
+
 
 
     }
     protected void onStartClicked() {
-        if (myManager.isFirstStart() == true) {
+        if (myManager.isFirstStart()) {
             for (TextView textView : displayTextViews) {
                 textView.setText("0:00.000");
             }
@@ -276,23 +270,27 @@ public class LapTimer extends AppCompatActivity {
             startButton.setText("Start");
             }
 
-    /*private ServiceConnection timerServiceConnection = new ServiceConnection() {
+    private ServiceConnection timerServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             MyBinder binder = (MyBinder) service;
             timerService = binder.getService();
+            myManager = timerService.getMyManager();
             isTimerServiceBound = true;
         }
 
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            isTimerServiceBound = true;
+            isTimerServiceBound = false;
         }
 
     };
-*/
+
+    public StopwatchManager getMyManager() {
+        return myManager;
     }
+}
 
 
 

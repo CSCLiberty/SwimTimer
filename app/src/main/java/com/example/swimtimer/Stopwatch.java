@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Stopwatch {
     private long startTimeInMillis;
     private ArrayList<Long> swimmerStartTimesInMillis = new ArrayList<>();
-    private int nextStartTimeToUse;
+    private int nextStartTimeToUse = 0;
     private long stopTimeInMillis;
     private long finalTimeInMillis = 0;
     //Storing the lap times so that they can be subtracted from the next lap time

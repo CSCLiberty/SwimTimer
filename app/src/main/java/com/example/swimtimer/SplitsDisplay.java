@@ -1,6 +1,11 @@
 package com.example.swimtimer;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.database.DataSetObserver;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +14,7 @@ import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import com.example.swimtimer.TimingService.MyBinder;
 
 import java.util.ArrayList;
 
@@ -28,13 +34,20 @@ public class SplitsDisplay extends AppCompatActivity {
     private Adapter lane4Adapter;
     private Adapter lane5Adapter;
     private Adapter lane6Adapter;
+    TimingService timerService;
+    private Boolean isTimerServiceBound;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_splits_display);
-        myManager = new StopwatchManager();// TimingService.getMyManager();
-        myManager.initStopwatches(6);//
-        returnButton = (Button) findViewById(R.id.returnButton);
+    }
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        returnButton = findViewById(R.id.returnButton);
         lane1ListView = findViewById(R.id.lane1ListView);
         lane2ListView = findViewById(R.id.lane2ListView);
         lane3ListView = findViewById(R.id.lane3ListView);
@@ -47,6 +60,10 @@ public class SplitsDisplay extends AppCompatActivity {
         lapDisplayListViews.add(lane4ListView);
         lapDisplayListViews.add(lane5ListView);
         lapDisplayListViews.add(lane6ListView);
+        Intent timerServiceIntent = new Intent(this, TimingService.class);
+        bindService(timerServiceIntent, timerServiceConnection, Context.BIND_AUTO_CREATE);
+
+
         returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,5 +91,22 @@ public class SplitsDisplay extends AppCompatActivity {
     {
         finish();
     }
+
+    private ServiceConnection timerServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MyBinder binder = (MyBinder) service;
+            timerService = binder.getService();
+            myManager = timerService.getMyManager();
+            isTimerServiceBound = true;
+        }
+
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            isTimerServiceBound = false;
+        }
+
+    };
 }
 

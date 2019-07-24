@@ -8,7 +8,12 @@ public class StopwatchManager {
     private boolean timersStarted = false;
     private boolean isFirstStart = true;
 
-    public void initStopwatches(int numberOfStopwatches)
+    public void StopwatchManager()
+    {
+        StopwatchManager(6);
+    }
+
+    public void StopwatchManager(int numberOfStopwatches)
     {
         for (int i = 0; i < numberOfStopwatches; i++) {
             stopwatches.add(new com.example.swimtimer.Stopwatch());
