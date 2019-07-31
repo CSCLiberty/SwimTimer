@@ -16,7 +16,7 @@ public class TimingService extends Service {
     public void onCreate(){
         super.onCreate();
 
-        myManager = new StopwatchManager();
+        myManager = new StopwatchManager(6);
         Toast.makeText(getApplicationContext(), "service created", Toast.LENGTH_SHORT).show();
 
     }

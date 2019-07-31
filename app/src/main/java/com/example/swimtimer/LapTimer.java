@@ -145,6 +145,7 @@ public class LapTimer extends AppCompatActivity {
         lapRecallButtons.add(lane4LapRecallButton);
         lapRecallButtons.add(lane5LapRecallButton);
         lapRecallButtons.add(lane6LapRecallButton);
+        myManager = new StopwatchManager(6);
 
 
     }
@@ -250,6 +251,7 @@ public class LapTimer extends AppCompatActivity {
         super.onStop();
         doUnBindFromService();
     }
+
 
     protected void onShowSplitsClicked()
     {
