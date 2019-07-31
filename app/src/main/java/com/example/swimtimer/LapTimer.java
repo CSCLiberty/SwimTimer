@@ -1,14 +1,20 @@
 package com.example.swimtimer;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.swimtimer.TimingService.MyBinder;
 import java.util.ArrayList;
 
@@ -78,6 +84,14 @@ public class LapTimer extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 
+        //Launch Service
+        Intent timerServiceIntent = new Intent(this, TimingService.class);
+        startService(timerServiceIntent);
+        bindService(timerServiceIntent, timerServiceConnection, Context.BIND_AUTO_CREATE);
+
+        //myManager = timerService.getMyManager();
+
+
         splitResetButton = findViewById(R.id.splitResetButton);
         showSplitsDisplay = findViewById(R.id.showSplitsButton);
         currentTimeTextView = findViewById(R.id.currentTimeTextView);
@@ -133,18 +147,15 @@ public class LapTimer extends AppCompatActivity {
         lapRecallButtons.add(lane6LapRecallButton);
 
 
-        //Launch Service
-        Intent timerServiceIntent = new Intent(this, TimingService.class);
-        startService(timerServiceIntent);
-        bindService(timerServiceIntent, timerServiceConnection, Context.BIND_AUTO_CREATE);
-
-        //myManager = timerService.getMyManager();
-
-
     }
     @Override
     protected void onStart() {
         super.onStart();
+
+        doBindToService();
+
+        myManager = timerService.getMyManager();
+
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -234,6 +245,12 @@ public class LapTimer extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStop(){
+        super.onStop();
+        doUnBindFromService();
+    }
+
     protected void onShowSplitsClicked()
     {
         Intent showSplitsIntent = new Intent("android.intent.action.SplitsDisplay");
@@ -271,6 +288,7 @@ public class LapTimer extends AppCompatActivity {
             }
 
     private ServiceConnection timerServiceConnection = new ServiceConnection() {
+
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             MyBinder binder = (MyBinder) service;
@@ -282,14 +300,32 @@ public class LapTimer extends AppCompatActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
+            timerService = null;
             isTimerServiceBound = false;
         }
 
     };
 
-    public StopwatchManager getMyManager() {
-        return myManager;
+    private void doBindToService(){
+        Toast.makeText(this, "Binding...", Toast.LENGTH_SHORT).show();
+        if(!isTimerServiceBound){
+            Intent bindIntent = new Intent(this, TimingService.class);
+            isTimerServiceBound = bindService(bindIntent, timerServiceConnection,
+                    Context.BIND_AUTO_CREATE);
+        }
     }
+
+    private void doUnBindFromService(){
+        Toast.makeText(this, "Unbinding...", Toast.LENGTH_SHORT).show();
+        unbindService(timerServiceConnection);
+        isTimerServiceBound = false;
+    }
+
+    /*public StopwatchManager getMyManager() {
+        return myManager;
+    }*/
+
+
 }
 
 

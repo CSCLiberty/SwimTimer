@@ -13,12 +13,22 @@ public class TimingService extends Service {
 
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public void onCreate(){
+        super.onCreate();
 
         myManager = new StopwatchManager();
+        Toast.makeText(getApplicationContext(), "service created", Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        //myManager = new StopwatchManager();
         //myManager.initStopwatches(6);
-        Toast.makeText(getApplicationContext(), "service started...", Toast.LENGTH_SHORT);
-        return super.onStartCommand(intent, flags, startId);
+        Toast.makeText(getApplicationContext(), "service started...", Toast.LENGTH_SHORT).show();
+        //return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     public IBinder onBind(Intent intent)
